@@ -131,11 +131,11 @@ export default function ChatWindow({
         >
           <motion.div
             key="chat-modal-content"
-            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 30 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="glass-card flex flex-col w-full max-w-2xl h-[80vh] relative overflow-hidden"
+            className="glass-card flex flex-col w-full max-w-2xl h-[90vh] md:h-[80vh] relative overflow-hidden m-2 md:m-0"
             style={{
               boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.5), 0 0 40px -8px var(--color-primary-a20, rgba(59, 130, 246, 0.15))',
             }}

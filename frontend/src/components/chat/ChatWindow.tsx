@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ChatMessage from './ChatMessage.tsx';
 import ChatInput from './ChatInput';
 import type { ChatMessage as ChatMessageType } from '../../types';
-import { MessageCircle, Trash2, Maximize2, Minimize2, X } from 'lucide-react';
+import { MessageCircle, Trash2, Maximize2, X } from 'lucide-react';
 import Spinner from '../ui/Spinner';
 
 interface ChatWindowProps {

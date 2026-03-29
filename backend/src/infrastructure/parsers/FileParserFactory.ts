@@ -1,10 +1,12 @@
 import { IFileParserPort } from '../../application/document/ports/IFileParserPort';
 import { PdfFileParser } from './PdfFileParser';
 import { DocxFileParser } from './DocxFileParser';
+import { ImageFileParser } from './ImageFileParser';
 
 export class FileParserFactory {
   private readonly pdfParser = new PdfFileParser();
   private readonly docxParser = new DocxFileParser();
+  private readonly imageParser = new ImageFileParser();
 
   getParser(mimeType: string): IFileParserPort {
     switch (mimeType) {
@@ -12,6 +14,10 @@ export class FileParserFactory {
         return this.pdfParser;
       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
         return this.docxParser;
+      case 'image/jpeg':
+      case 'image/png':
+      case 'image/webp':
+        return this.imageParser;
       default:
         throw new Error(`No parser available for MIME type: ${mimeType}`);
     }

@@ -13,11 +13,15 @@ import Spinner from '../components/ui/Spinner';
 import Button from '../components/ui/Button';
 import toast from 'react-hot-toast';
 import { ArrowRight, RotateCcw } from 'lucide-react';
+import api from '../services/api';
 
 export default function Analyze() {
   const [result, setResult] = useState<DocumentFull | null>(null);
   const { uploadFile, submitText, loading, error } = useDocument();
+  const [merging, setMerging] = useState(false);
   const navigate = useNavigate();
+
+  const isLoading = loading || merging;
 
   const handleFileSelected = async (file: File) => {
     try {
@@ -25,6 +29,46 @@ export default function Analyze() {
       setResult(doc);
       toast.success('Document analyzed successfully!');
     } catch (err: any) {
+      toast.error(err.message || 'Analysis failed');
+    }
+  };
+
+  const handleFilesSelected = async (files: File[]) => {
+    if (files.length === 1) {
+      return handleFileSelected(files[0]);
+    }
+
+    try {
+      setMerging(true);
+
+      // Step 1: Extract text from each file via the server (handles OCR, PDF parsing, etc.)
+      const extractedTexts: string[] = [];
+      const fileNames: string[] = [];
+
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await api.post('/api/documents/extract', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        fileNames.push(data.data.filename);
+        extractedTexts.push(`--- FILE: ${data.data.filename} ---\n${data.data.text}`);
+      }
+
+      // Step 2: Merge all extracted texts
+      const mergedText = extractedTexts.join('\n\n');
+      const mergedTitle = fileNames.length <= 3
+        ? fileNames.join(' + ')
+        : `${fileNames.slice(0, 2).join(' + ')} + ${fileNames.length - 2} more`;
+
+      setMerging(false);
+
+      // Step 3: Submit merged text as a single document for AI analysis
+      const doc = await submitText(mergedText.slice(0, 50000), mergedTitle);
+      setResult(doc);
+      toast.success(`${files.length} documents merged & analyzed!`);
+    } catch (err: any) {
+      setMerging(false);
       toast.error(err.message || 'Analysis failed');
     }
   };
@@ -43,14 +87,20 @@ export default function Analyze() {
     setResult(null);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-6 py-24">
         <div className="flex flex-col items-center justify-center gap-6">
           <Spinner size="lg" />
           <div className="text-center">
-            <h2 className="text-xl font-heading font-bold text-text-primary mb-2">Analyzing your document...</h2>
-            <p className="text-sm text-text-secondary">Our AI is reading and breaking down your document. This may take 10-15 seconds.</p>
+            <h2 className="text-xl font-heading font-bold text-text-primary mb-2">
+              {merging ? 'Extracting text from files...' : 'Analyzing your document...'}
+            </h2>
+            <p className="text-sm text-text-secondary">
+              {merging
+                ? 'Processing each file through OCR & text extraction before merging.'
+                : 'Our AI is reading and breaking down your document. This may take 10-15 seconds.'}
+            </p>
           </div>
           {/* Skeleton loading cards */}
           <div className="w-full space-y-4 mt-6">
@@ -103,8 +153,8 @@ export default function Analyze() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-12">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-        <h1 className="text-3xl font-heading font-bold text-text-primary mb-2">Analyze a Document</h1>
-        <p className="text-text-secondary">Upload a file or paste text to get a plain-English breakdown</p>
+        <h1 className="text-3xl font-heading font-bold text-text-primary mb-2">Analyze Documents</h1>
+        <p className="text-text-secondary">Upload files or paste text to get a plain-English breakdown</p>
       </motion.div>
 
       {error && (
@@ -114,7 +164,12 @@ export default function Analyze() {
       )}
 
       <div className="space-y-6">
-        <DropZone onFileSelected={handleFileSelected} isLoading={loading} />
+        <DropZone
+          onFileSelected={handleFileSelected}
+          onFilesSelected={handleFilesSelected}
+          isLoading={isLoading}
+          multiple
+        />
 
         <div className="flex items-center gap-4">
           <div className="flex-1 h-px bg-border" />
@@ -122,7 +177,7 @@ export default function Analyze() {
           <div className="flex-1 h-px bg-border" />
         </div>
 
-        <TextPaste onTextSubmit={handleTextSubmit} isLoading={loading} />
+        <TextPaste onTextSubmit={handleTextSubmit} isLoading={isLoading} />
       </div>
     </div>
   );

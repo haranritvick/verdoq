@@ -70,6 +70,29 @@ export function useDocument() {
     }
   }, []);
 
+  const uploadFiles = useCallback(async (files: File[]): Promise<DocumentFull[]> => {
+    setLoading(true);
+    setError(null);
+    const results: DocumentFull[] = [];
+    try {
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await api.post('/api/documents/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        results.push(data.data as DocumentFull);
+      }
+      return results;
+    } catch (err: any) {
+      const msg = err.response?.data?.error || 'Failed to upload documents';
+      setError(msg);
+      throw new Error(msg);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const deleteDocument = useCallback(async (id: string) => {
     try {
       await api.delete(`/api/documents/${id}`);
@@ -78,5 +101,5 @@ export function useDocument() {
     }
   }, []);
 
-  return { uploadFile, submitText, getDocument, listDocuments, deleteDocument, loading, error };
+  return { uploadFile, uploadFiles, submitText, getDocument, listDocuments, deleteDocument, loading, error };
 }

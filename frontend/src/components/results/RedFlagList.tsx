@@ -50,9 +50,9 @@ export default function RedFlagList({ redFlags }: RedFlagListProps) {
               borderLeftColor: flag.severity === 'high' ? '#FF4D4D' : flag.severity === 'medium' ? '#FF9A3C' : '#4DFF91',
             }}
           >
-            <div className="flex items-start justify-between mb-2">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
               <p className="text-sm text-text-secondary italic">"{flag.clause}"</p>
-              <Badge variant={severityVariant(flag.severity)} size="sm">{flag.severity}</Badge>
+              <Badge variant={severityVariant(flag.severity)} size="sm" className="w-fit">{flag.severity}</Badge>
             </div>
             <p className="text-sm text-text-primary">{flag.explanation}</p>
           </motion.div>

@@ -1,21 +1,26 @@
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, FileText } from 'lucide-react';
+import { Upload, FileText, Files } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface DropZoneProps {
   onFileSelected: (file: File) => void;
+  onFilesSelected?: (files: File[]) => void;
   isLoading?: boolean;
+  multiple?: boolean;
 }
 
-export default function DropZone({ onFileSelected, isLoading }: DropZoneProps) {
+export default function DropZone({ onFileSelected, onFilesSelected, isLoading, multiple = false }: DropZoneProps) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 0) {
+      if (acceptedFiles.length === 0) return;
+      if (multiple && onFilesSelected) {
+        onFilesSelected(acceptedFiles);
+      } else {
         onFileSelected(acceptedFiles[0]);
       }
     },
-    [onFileSelected]
+    [onFileSelected, onFilesSelected, multiple]
   );
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
@@ -24,10 +29,14 @@ export default function DropZone({ onFileSelected, isLoading }: DropZoneProps) {
       'application/pdf': ['.pdf'],
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
       'text/plain': ['.txt'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/webp': ['.webp'],
     },
-    maxFiles: 1,
-    maxSize: 10 * 1024 * 1024, // 10MB
+    maxFiles: multiple ? 10 : 1,
+    maxSize: 10 * 1024 * 1024, // 10MB per file
     disabled: isLoading,
+    multiple,
   });
 
   return (
@@ -57,6 +66,8 @@ export default function DropZone({ onFileSelected, isLoading }: DropZoneProps) {
           <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-colors duration-300 ${isDragActive ? 'bg-primary/20' : 'bg-surface border border-border group-hover:border-primary/30'}`}>
             {isDragActive ? (
               <FileText className="w-8 h-8 text-primary" />
+            ) : multiple ? (
+              <Files className="w-8 h-8 text-text-secondary group-hover:text-primary transition-colors" />
             ) : (
               <Upload className="w-8 h-8 text-text-secondary group-hover:text-primary transition-colors" />
             )}
@@ -64,10 +75,13 @@ export default function DropZone({ onFileSelected, isLoading }: DropZoneProps) {
 
           <div>
             <p className="text-lg font-medium text-text-primary mb-1">
-              {isDragActive ? 'Drop your document here' : 'Drop your document here or click to browse'}
+              {isDragActive
+                ? `Drop your document${multiple ? 's' : ''} here`
+                : `Drop your document${multiple ? 's' : ''} here or click to browse`}
             </p>
             <p className="text-sm text-text-secondary">
-              Supports PDF, DOCX, and TXT files up to 10MB
+              Supports PDF, DOCX, TXT, and Images (Scan/Photo) up to 10MB
+              {multiple && <span className="block mt-1 text-xs text-primary/70">You can select up to 10 files at once</span>}
             </p>
           </div>
         </div>

@@ -12,11 +12,14 @@ export const uploadMiddleware = multer({
       'application/pdf',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'text/plain',
+      'image/jpeg',
+      'image/png',
+      'image/webp',
     ];
     if (allowedMimes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type. Only PDF, DOCX, and TXT files are allowed.'));
+      cb(new Error('Invalid file type. Only PDF, DOCX, TXT, and Images (JPG/PNG) are allowed.'));
     }
   },
 });

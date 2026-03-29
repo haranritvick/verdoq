@@ -8,6 +8,7 @@ import { createAuthMiddleware } from '../middleware/authMiddleware';
 import { uploadMiddleware } from '../middleware/uploadMiddleware';
 import { validateBody } from '../middleware/validateMiddleware';
 import { JwtTokenAdapter } from '../../infrastructure/auth/JwtTokenAdapter';
+import { FileParserFactory } from '../../infrastructure/parsers/FileParserFactory';
 
 const textSubmitSchema = z.object({
   text: z.string().min(1).max(50000),
@@ -23,9 +24,25 @@ export function createDocumentRoutes(
 ): Router {
   const router = Router();
   const auth = createAuthMiddleware(tokenAdapter);
+  const fileParserFactory = new FileParserFactory();
 
   // Upload file (PDF/DOCX)
   router.post('/upload', auth, uploadMiddleware.single('file'), uploadController.handle);
+
+  // Extract text only (no AI analysis) — used for multi-file merge
+  router.post('/extract', auth, uploadMiddleware.single('file'), async (req, res, next) => {
+    try {
+      const file = req.file;
+      if (!file) {
+        res.status(400).json({ success: false, error: 'No file provided' });
+        return;
+      }
+      const text = await fileParserFactory.parse(file.buffer, file.mimetype);
+      res.json({ success: true, data: { text, filename: file.originalname } });
+    } catch (err) {
+      next(err);
+    }
+  });
 
   // Submit raw pasted text
   router.post('/text', auth, validateBody(textSubmitSchema), async (req, res, next) => {

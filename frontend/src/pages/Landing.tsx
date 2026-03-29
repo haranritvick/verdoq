@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { Shield, FileText, Zap, MessageCircle, Eye, ArrowRight, Check, Scale } from 'lucide-react';
-import Button from '../components/ui/Button';
 
 export default function Landing() {
   const handleLogin = () => {
@@ -18,24 +17,8 @@ export default function Landing() {
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
-      {/* Navigation (Optional since Layout has Navbar, but we can structure this to feel cohesive) */}
-      <nav className="relative z-10 flex items-center justify-between px-6 lg:px-12 py-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(221,244,55,0.3)]">
-            <Scale className="w-5 h-5 text-black" />
-          </div>
-          <span className="text-2xl font-bold font-heading tracking-tight">Verdoq</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="hidden sm:inline text-sm text-text-secondary">Ready to discover what you're signing?</span>
-          <Button size="sm" onClick={handleLogin} className="rounded-full px-5 pointer-events-auto">
-            Log in
-          </Button>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <main className="relative z-10 px-6 pt-24 pb-32 max-w-7xl mx-auto flex flex-col items-center text-center">
+      {/* Hero Section — no duplicate nav, uses shared Navbar from Layout */}
+      <main className="relative z-10 px-6 pt-16 pb-32 max-w-7xl mx-auto flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

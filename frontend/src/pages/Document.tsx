@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useDocument } from '../hooks/useDocument';
@@ -21,6 +21,8 @@ export default function Document() {
   const { getDocument, deleteDocument, loading: docLoading } = useDocument();
   const { messages, loading: chatLoading, sending, fetchHistory, sendMessage, clearChat } = useChat(id!);
   const [doc, setDoc] = useState<DocumentFull | null>(null);
+  const [chatExpanded, setChatExpanded] = useState(false);
+  const toggleChatExpand = useCallback(() => setChatExpanded((prev) => !prev), []);
 
   useEffect(() => {
     if (id) {
@@ -112,6 +114,8 @@ export default function Document() {
             sending={sending}
             onSendMessage={sendMessage}
             onClearChat={clearChat}
+            isExpanded={chatExpanded}
+            onToggleExpand={toggleChatExpand}
           />
         </div>
       </div>

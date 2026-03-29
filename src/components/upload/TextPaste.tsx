@@ -53,8 +53,8 @@ export default function TextPaste({ onTextSubmit, isLoading }: TextPasteProps) {
 
       <div className="flex items-center justify-between">
         <span className="text-xs text-text-secondary">{text.length.toLocaleString()} / 50,000 chars</span>
-        <Button onClick={handleSubmit} disabled={!text.trim()} isLoading={isLoading} size="sm">
-          Analyze Text
+        <Button onClick={handleSubmit} disabled={!text.trim() || isLoading} size="sm">
+          {isLoading ? 'Analyzing...' : 'Analyze Text'}
         </Button>
       </div>
     </motion.div>

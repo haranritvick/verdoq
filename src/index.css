@@ -1,31 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Instrument+Serif:ital@0;1&display=swap');
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    @apply border-border outline-ring/50;
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
   }
 
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+}
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse-slow 4s ease-in-out infinite;
+  }
+}
+
+@layer base {
   body {
-    @apply font-body antialiased bg-background text-foreground;
+    @apply bg-background text-text-primary antialiased selection:bg-primary/30 selection:text-primary;
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
   }
 
-  h1, h2, h3, h4 {
-    @apply font-heading;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading tracking-tight text-text-primary;
+    font-family: 'Outfit', sans-serif;
   }
 
   ::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -33,116 +51,69 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-text-secondary;
-  }
-  .theme {
-    --font-heading: var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
-  }
-  :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
-  }
-  .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-  }
-  html {
-    @apply font-sans;
+    @apply bg-border rounded-full hover:bg-text-secondary transition-colors;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-surface/80 backdrop-blur-xl border border-border rounded-2xl;
+    @apply bg-surface/40 backdrop-blur-2xl border border-white/5 rounded-2xl shadow-2xl;
   }
 
   .shimmer-loading {
-    @apply bg-gradient-to-r from-surface via-border to-surface bg-[length:200%_100%] animate-shimmer rounded-xl;
-  }
-
-  .glow-primary {
-    box-shadow: 0 0 30px rgba(232, 255, 89, 0.15), 0 0 60px rgba(232, 255, 89, 0.05);
+    @apply bg-gradient-to-r from-surface via-white/5 to-surface bg-[length:200%_100%] animate-shimmer rounded-xl;
   }
 
   .btn-primary {
-    @apply bg-primary text-background font-semibold px-6 py-3 rounded-xl 
-           hover:bg-primary/90 transition-all duration-200 
-           active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-primary text-black font-semibold px-6 py-3 rounded-full hover:bg-primary/90 transition-all duration-300 hover:shadow-[0_0_20px_rgba(232,255,89,0.3)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center;
   }
 
   .btn-secondary {
-    @apply bg-surface border border-border text-text-primary font-medium px-6 py-3 rounded-xl
-           hover:bg-border/50 transition-all duration-200 
-           active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-white/5 border border-white/10 text-white font-medium px-6 py-3 rounded-full hover:bg-white/10 transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center backdrop-blur-md;
   }
 
   .input-dark {
-    @apply bg-surface border border-border text-text-primary rounded-xl px-4 py-3
-           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
-           placeholder:text-text-secondary transition-all duration-200;
+    @apply bg-black/40 border border-white/10 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 placeholder:text-text-secondary transition-all duration-300 backdrop-blur-md;
+  }
+
+  /* Stunning Orb Animation */
+  .glow-orb {
+    @apply absolute rounded-full mix-blend-screen filter blur-[100px] opacity-40 animate-pulse-slow pointer-events-none;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05);
   }
 }

@@ -43,7 +43,7 @@ export default function SectionList({ sections }: SectionListProps) {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <div className="px-4 pb-4 space-y-3">
+                  <div className="px-4 py-4 space-y-3">
                     <div>
                       <p className="text-xs uppercase tracking-wider text-primary mb-1 font-semibold">Plain English</p>
                       <p className="text-sm text-text-secondary leading-relaxed">{section.plainText}</p>
